@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" >
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Pagination using Angular.js">
+        <meta name="author" content="Piyush">
+        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script> 
+        <script src="ng-tasty-tpls.min.js"></script>
+    </head>
+    <body>
+        <h1>Welcome to Sample of Pagination Using Angular.js</h1>
+        <div ng-app="paginationApp" ng-controller="paginationCtl">
+            <div tasty-table bind-init="init"  bind-resource-callback="getResourceTwo">
+                <table class="table table-striped table-condensed" border="1">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Mobile</th>
+                        </tr>
+                    <thead>
+                    <tbody>
+                        <tr ng-repeat="row in rows">
+                            <td>{{ row.name}}</td>
+                            <td>{{ row.email}}</td>
+                            <td>{{ row.mobile}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div tasty-pagination></div>
+            </div>
+        </div>
+        <script>
+            var app = angular.module('paginationApp', ['ngTasty']);
+            app.controller('paginationCtl', function ($scope, $http) {
+                $scope.init = {
+                    'count': 5,
+                    'page': 1,
+                    'sortBy': 'name',
+                    'sortOrder': 'dsc'
+                };
+                $scope.getResourceTwo = function (params, paramsObj) {
+                    $scope.paramsTwo = params;
+                    $scope.paramsObjTwo = paramsObj;
+                    $scope.urlApiTwo = 'server.php?' + params;
+                    return $http.get($scope.urlApiTwo).then(function (response) {
+                        $scope.responseThree = JSON.stringify(response.data, undefined, 2);
+                        return {
+                            'rows': response.data.rows,
+                            'header': response.data.header,
+                            'pagination': response.data.pagination,
+                            'sortBy': response.data['sort-by'],
+                            'sortOrder': response.data['sort-order']
+                        };
+                    });
+                };
+            });
+        </script>
+    </body>
+</html>
